@@ -7,7 +7,7 @@ from common import settings
 SECTION_HEADER = re.compile(r"^@@@[ \t]*([\w.-]+)[ \t]*@@@[ \t]*$")
 OPTIONAL_BLOCK = re.compile(r"\{\{#(\w+)\}\}(.*?)\{\{/\1\}\}", re.DOTALL)
 
-CLASS_HEADER = re.compile(r"^===\s*(.+?)\s*===\s*$")
+CLASS_HEADER = re.compile(r"^\$\$\s*(.+?)\s*\$\$\s*$")
 CLASS_FIELD_HEADER = re.compile(r"^\[(definition|example|narrative)\]\s*$")
 CLASS_FIELDS = ("definition", "example", "narrative")
 CATALOGUE_SECTION = "relation_categories"
@@ -145,7 +145,7 @@ def parse_categories(text):
         field_header = CLASS_FIELD_HEADER.match(line)
         if field_header:
             if name is None:
-                raise ValueError(f"Field '{line.strip()}' before any '=== class ===' in {source}.")
+                raise ValueError(f"Field '{line.strip()}' before any '$$ class $$' in {source}.")
             field = field_header.group(1)
             continue
 
@@ -204,13 +204,6 @@ def format_relations(relations):
     )
 
 
-def format_catalogue():
-    return "\n\n".join(
-        f'"{name}" — {definition}'
-        for name, definition, example, narrative in categories()
-    )
-
-
 def format_other_classes(relation_type):
     return "\n".join(
         f"- {name}"
@@ -219,31 +212,25 @@ def format_other_classes(relation_type):
     )
 
 
-def active_blocks(context, annotated, notes):
+def active_blocks(context, notes):
     blocks = []
     if context:
         blocks.append("context")
-    if annotated:
-        blocks.append("annotation")
     if notes:
         blocks.append("analysis")
     return tuple(blocks)
 
 
-def reading_prompt(snippet, annotated=True):
-    return render(
-        "analyse_snippet",
-        active_blocks=("annotation",) if annotated else (),
-        chunk_text=snippet,
-    )
+def reading_prompt(snippet):
+    return render("analyse_snippet", chunk_text=snippet)
 
 
-def class_extraction_prompt(snippet, category, passages=None, annotated=True, notes=""):
+def class_extraction_prompt(snippet, category, passages=None, notes=""):
     relation_type, definition, example, narrative = category
     context = format_context(passages)
     return render(
         "extract",
-        active_blocks=active_blocks(context, annotated, notes),
+        active_blocks=active_blocks(context, notes),
         relation_type=relation_type,
         relation_definition=definition,
         examples_narrative=narrative,
@@ -254,30 +241,13 @@ def class_extraction_prompt(snippet, category, passages=None, annotated=True, no
     )
 
 
-def open_extraction_prompt(snippet, passages=None, annotated=True, notes=""):
+def open_extraction_prompt(snippet, passages=None, notes=""):
     context = format_context(passages)
     return render(
         "extract_open",
-        active_blocks=active_blocks(context, annotated, notes),
+        active_blocks=active_blocks(context, notes),
         snippets=context,
         analysis=notes,
-        chunk_text=snippet,
-    )
-
-
-def triple_completion_prompt(snippet, triple, passages=None, use_classes=True):
-    context = format_context(passages)
-    blocks = ["context"] if context else []
-    blocks.append("classes" if use_classes else "open_classes")
-    return render(
-        "complete_relation",
-        active_blocks=tuple(blocks),
-        subject=triple.get("head", ""),
-        object=triple.get("tail", ""),
-        rebel_relation=triple.get("type", ""),
-        rebel_window=triple.get("window") or snippet,
-        categories=format_catalogue() if use_classes else "",
-        snippets=context,
         chunk_text=snippet,
     )
 

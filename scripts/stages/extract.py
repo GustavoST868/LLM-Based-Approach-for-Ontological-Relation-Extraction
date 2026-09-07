@@ -6,7 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from common import (cleanup, console, embeddings, language, model, papers, prompts, rag, rebel,
+from common import (cleanup, console, embeddings, model, papers, prompts, rag,
                     relations, settings, storage)
 
 
@@ -55,7 +55,7 @@ def reading_is_on():
     return settings.current().use_reading
 
 
-def notes_for(snippet, annotated_text=None):
+def notes_for(snippet):
     global last_snippet, last_notes
 
     if not reading_is_on() or not snippet or not snippet.strip():
@@ -65,13 +65,12 @@ def notes_for(snippet, annotated_text=None):
         return last_notes
 
     last_snippet = snippet
-    last_notes = read_snippet(snippet, annotated_text)
+    last_notes = read_snippet(snippet)
     return last_notes
 
 
-def read_snippet(snippet, annotated_text=None):
-    text = annotated_text if annotated_text is not None else snippet
-    prompt = prompts.reading_prompt(text, annotated=settings.current().use_annotation)
+def read_snippet(snippet):
+    prompt = prompts.reading_prompt(snippet)
 
     reading_counts["readings"] += 1
     try:
@@ -192,19 +191,6 @@ def notes_from_answer(answer, snippet):
     return "\n".join(block)
 
 
-def annotated_snippet(snippet):
-    if not settings.current().use_annotation:
-        return snippet
-
-    try:
-        return language.annotate(snippet)
-    except Exception as error:
-        console.once("annotation-unavailable",
-                     f"Linguistic annotation unavailable ({error}); sending the raw text instead.",
-                     console.warn)
-        return snippet
-
-
 def record_source(found, capture, prompt, notes=""):
     for relation in found:
         relation["prompt"] = capture.get("prompt") or prompt
@@ -214,11 +200,10 @@ def record_source(found, capture, prompt, notes=""):
     return found
 
 
-def ask_for_class(snippet, category, passages, annotated, notes):
+def ask_for_class(snippet, category, passages, notes):
     relation_type = category[0]
     prompt = prompts.class_extraction_prompt(
-        annotated, category, passages=passages,
-        annotated=settings.current().use_annotation, notes=notes,
+        snippet, category, passages=passages, notes=notes,
     )
 
     capture = {}
@@ -229,10 +214,9 @@ def ask_for_class(snippet, category, passages, annotated, notes):
     return record_source(found, capture, prompt, notes)
 
 
-def ask_openly(snippet, passages, annotated, notes):
+def ask_openly(snippet, passages, notes):
     prompt = prompts.open_extraction_prompt(
-        annotated, passages=passages,
-        annotated=settings.current().use_annotation, notes=notes,
+        snippet, passages=passages, notes=notes,
     )
 
     capture = {}
@@ -243,79 +227,11 @@ def ask_openly(snippet, passages, annotated, notes):
     return record_source(found, capture, prompt, notes)
 
 
-def completion_is_about_candidate(relation, triple):
-    parts = [part.strip() for part in relation.get("usage_example", "").split("|")]
-    if len(parts) != 3:
-        return False
-
-    subject, predicate, target = parts
-    head = triple.get("head", "")
-    tail = triple.get("tail", "")
-    return (
-        (relations.same_entity(subject, head) and relations.same_entity(target, tail))
-        or (relations.same_entity(subject, tail) and relations.same_entity(target, head))
-    )
-
-
-def ask_to_complete(snippet, triple, passages):
-    use_classes = settings.current().use_classes
-    prompt = prompts.triple_completion_prompt(
-        snippet, triple, passages=passages, use_classes=use_classes
-    )
-
-    capture = {}
-    found = relations.ask_for_relations(
-        prompt, expected_type=None, source_text=snippet, free_type=not use_classes,
-        kind="triple completion", capture=capture,
-    )
-
-    candidate = f"{triple.get('head', '')} | {triple.get('type', '')} | {triple.get('tail', '')}"
-    kept = []
-    for relation in found:
-        if not completion_is_about_candidate(relation, triple):
-            relations.counts["off_candidate"] += 1
-            console.detail(f"Dropped: the model answered about "
-                           f"'{relation.get('usage_example')}' instead of the candidate "
-                           f"'{candidate}'.")
-            continue
-
-        relation["prompt"] = capture.get("prompt") or prompt
-        relation["model_output"] = capture.get("answer")
-        relation["rebel_triplet"] = candidate
-        kept.append(relation)
-
-    return kept
-
-
-def rebel_candidates(snippet):
-    proposed = rebel.triples_of(snippet)
-    grounded = [
-        triple for triple in proposed
-        if relations.is_in_source(triple.get("head", ""), snippet)
-        and relations.is_in_source(triple.get("tail", ""), snippet)
-    ]
-    console.detail(f"REBEL proposed {len(proposed)} triple(s), "
-                   f"{len(proposed) - len(grounded)} not grounded in the text, "
-                   f"{len(grounded)} going to the model.")
-    return grounded
-
-
 def relations_in(snippet, passages=None, on_request=None):
     if not snippet or not snippet.strip():
         return
 
     options = settings.current()
-
-    if options.uses_rebel:
-        triples = rebel_candidates(snippet)
-        for position, triple in enumerate(triples, start=1):
-            if on_request is not None:
-                on_request(f"{triple.get('head', '')} → {triple.get('tail', '')}",
-                           position, len(triples))
-            yield from ask_to_complete(snippet, triple, passages)
-        return
-
-    annotated = annotated_snippet(snippet)
     categories = prompts.categories()
 
     extraction_requests = len(categories) if options.use_classes else 1
@@ -324,24 +240,22 @@ def relations_in(snippet, passages=None, on_request=None):
 
     if reading_requests and on_request is not None:
         on_request("reading the snippet", 1, total)
-    notes = notes_for(snippet, annotated)
+    notes = notes_for(snippet)
 
     if not options.use_classes:
         if on_request is not None:
             on_request("open extraction", total, total)
-        yield from ask_openly(snippet, passages, annotated, notes)
+        yield from ask_openly(snippet, passages, notes)
         return
 
     for position, category in enumerate(categories, start=1):
         if on_request is not None:
             on_request(category[0], position + reading_requests, total)
-        yield from ask_for_class(snippet, category, passages, annotated, notes)
+        yield from ask_for_class(snippet, category, passages, notes)
 
 
 def requests_per_snippet():
     options = settings.current()
-    if options.uses_rebel:
-        return None
     asked = len(prompts.categories()) if options.use_classes else 1
     return asked + (1 if reading_is_on() else 0)
 
@@ -354,25 +268,12 @@ def prepare_models(options):
         indexes = rag.update_all_indexes()
         embeddings.unload()
 
-    if options.use_annotation or options.by_sentence:
-        language.prepare()
-
-    if options.uses_rebel:
-        rebel.prepare()
-
     return indexes
 
 
 def sentences_of(paragraph):
-    try:
-        sentences = language.split_sentences(paragraph)
-    except Exception as error:
-        console.once("sentence-split-fallback",
-                     f"spaCy could not split the sentences ({error}); falling back to "
-                     "punctuation.", console.warn)
-        sentences = relations.sentences_of(paragraph)
-
-    kept = [text for text in sentences if len(text) >= settings.MIN_SENTENCE_CHARACTERS]
+    kept = [text for text in relations.sentences_of(paragraph)
+            if len(text) >= settings.MIN_SENTENCE_CHARACTERS]
     return kept or [paragraph]
 
 
@@ -444,7 +345,7 @@ def extract_pdf(pdf_path, position, pdf_count, raw_file, indexes, done, signatur
             document=pdf_path.name,
             document_position=f"{position}/{pdf_count}",
             paragraph=f"{number}/{len(snippets)} {word}",
-            unit="reading…" if requests_total is None else f"0/{requests_total}",
+            unit=f"0/{requests_total}",
             relations=total_so_far,
             elapsed=console.elapsed_since(started_at),
             force=True,

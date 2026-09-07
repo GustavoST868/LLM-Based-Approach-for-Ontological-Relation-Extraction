@@ -4,7 +4,7 @@ import re
 
 import numpy
 
-from common import console, embeddings, language, papers, settings
+from common import console, embeddings, papers, relations, settings
 
 
 SUPPORTED_SUFFIXES = {".pdf", ".txt", ".md"}
@@ -154,7 +154,7 @@ def paragraphs_of_file(path):
 def sentences_of_file(path):
     sentences = []
     for paragraph in paragraphs_of_file(path):
-        for sentence in language.split_sentences(paragraph):
+        for sentence in relations.sentences_of(paragraph):
             if len(sentence) >= MIN_SENTENCE_CHARACTERS:
                 sentences.append(sentence)
     return sentences

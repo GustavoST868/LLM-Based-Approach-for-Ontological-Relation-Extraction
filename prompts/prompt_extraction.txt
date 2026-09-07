@@ -29,9 +29,6 @@ Reply with a single JSON object and nothing else — no prose around it, no expl
 Sentences retrieved from the reference corpora follow, for your understanding only. They may have nothing to do with this snippet, and they are never a source of entities.
 $snippets
 {{/context}}
-{{#annotation}}
-After the snippet, under "Verbs and what they connect", a parser lists the subjects it found, the verbs, and what each verb ties them to. It is a guide to the text and not part of it: entities are copied from the running text, never from those lines.
-{{/annotation}}
 {{#analysis}}
 The snippet was read once before this request, with no category in mind, and that reading is below. Its links were checked against the snippet, so what is left is really in the text. Work through them, keep those that are instances of "$relation_type", and pass over the rest in silence; a link listed there is not thereby an instance of anything, and an instance the reading missed is still yours to extract.
 
@@ -68,52 +65,11 @@ Reply with a single JSON object and nothing else — no prose around it, no expl
 Sentences retrieved from the reference corpora follow, for your understanding only. They may have nothing to do with this snippet, and they are never a source of entities.
 $snippets
 {{/context}}
-{{#annotation}}
-After the snippet, under "Verbs and what they connect", a parser lists the subjects it found, the verbs, and what each verb ties them to. It is a guide to the text and not part of it: entities are copied from the running text, never from those lines.
-{{/annotation}}
 {{#analysis}}
 The snippet was read once before this request, and that reading is below. Its links were checked against the snippet, so what is left is really in the text. Work through them, keep those that really are relations the snippet states, and pass over the rest in silence; a link listed there is not thereby a relation, and a relation the reading missed is still yours to extract.
 
 $analysis
 {{/analysis}}
-
-Snippet:
-"""
-$chunk_text
-"""
-
-
-@@@ complete_relation @@@
-
-A relation extractor has read the snippet at the end of this prompt and proposed one candidate triple from it: the subject "$subject" and the object "$object", which it labelled "$rebel_relation", taken from the sentence "$rebel_window". Decide whether that candidate is a genuine relation and, if it is, write the complete record for it.
-
-The extractor knows nothing of the categories used here and its label comes from a generic vocabulary, so treat "$rebel_relation" as a hint about what it saw, never as the answer and never as the value of any field; the subject and the object are what matter. Judge them against the snippet rather than against the candidate: if the running text does not state a relation between "$subject" and "$object" outright, the candidate is wrong and rejecting it is the answer — the extractor makes mistakes, and rejection is the commoner outcome. Describe this candidate and nothing else, however many other relations the snippet holds, and keep the subject and the object exactly as given, never swapped, widened or replaced.
-{{#classes}}
-Reject the candidate as well when it is a real relation but fits none of the categories below. The catalogue is closed, and forcing a bad fit is worse than returning nothing. The value you write in "relation_type" is one of these names, copied character for character:
-
-$categories
-{{/classes}}
-The record is five fields. "name" is a short identifier in lower snake_case, at most three words and ideally two, always containing a verb — is_a, derives_from, located_in, and "is_part_of" rather than the bare "part_of"; it names the relation that holds between the subject and the object, and may well differ from the extractor's label. "description" is one sentence of at most twenty-five words, in subject-relation-object order, naming the concrete entities and never restating the generic definition.{{#classes}} "relation_type" is one of the category names above, copied character for character.{{/classes}}{{#open_classes}} "relation_type" is the kind of relation this is, in Title Case and two to five words — "Mereological Relations", "Temporal Relations", "Causal Relations" — naming the kind and never the instance.{{/open_classes}} "usage_example" holds the triple as "Subject | Predicate | Object" with exactly two vertical bars, its subject being "$subject" and its object "$object" written exactly as given, and its predicate the value of "name" copied character for character.
-
-"definition" is the field that deserves your care, and it is a rigorous definition: one prose paragraph of at most three sentences and four hundred characters, with no line break, list or heading inside it. Its first sentence gives the relation, its nearest genus — mereological, spatial, causal, taxonomic, temporal, participation — and the differentia separating it from its siblings under that genus, never a remote genus such as "a relation" where a narrower one exists; where the relation is a special case of another, that other becomes the genus, as in "As {parent relation}, but with the additional restriction that ...". At most two sentences follow: what kinds of entities the relation ties, phrased as "this instance of a cell wall is_part_of this instance of a plant cell", with "at t" only where the relation holds at a time, and then, only where a sibling is genuinely easy to confuse with it, a brief clause on what the relation is not. Nothing else belongs there — no OWL typing, which a later step decides, and no bare letter standing for an entity, the only admissible letter being t for the time. The definition stays category-level throughout: it generalizes to every instance, never names the entities at hand, is convertible with the term defined, and is never circular or metaphorical.
-
-Reply with a single JSON object and nothing else — no prose around it, no explanation, no markdown fence, no comment. It carries one key, "relations", holding at most one relation object, the one for this candidate. To reject the candidate, answer exactly {"relations": []} and explain nothing. To accept it, reproduce the structure of this example and never its content, whose entities are invented:
-{
-  "relations": [
-    {
-      "name": "is_part_of",
-      "description": "The nucleus is a constituent part of the cell.",
-      "definition": "is_part_of is a mereological relation that holds when one continuant is a constituent of another and the whole is not complete without it, so that this instance of a cell wall is_part_of this instance of a plant cell at t. The part is distinct from the whole and lies within the region the whole occupies at t. It is not mere spatial containment, which requires no constitution.",
-      "relation_type": "Mereological Relations",
-      "usage_example": "Nucleus | is_part_of | Cell"
-    }
-  ]
-}
-{{#context}}
-Sentences retrieved from the reference corpora follow, for your understanding only. They may have nothing to do with this snippet, and they are never a source of entities.
-$snippets
-{{/context}}
-The running text below is the whole of your evidence. If it states no relation between "$subject" and "$object", return an empty list.
 
 Snippet:
 """

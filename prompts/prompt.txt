@@ -106,7 +106,7 @@ Distinct:
 #              goes into no prompt today)
 # [narrative]  how the class shows up in running text (goes into the prompt)
 
- Subsumption 
+$$ Subsumption $$
 
 [definition]
 These relations form the backbone of an ontology by establishing a type hierarchy in which a more specific class inherits all the properties of a more general class. At the level of universals, the subsumption relation is defined by a logical structure according to which every instance of the specific type, at any point in its existence, is also an instance of the more general type. This structure enables the logical categorization of knowledge into decreasing levels of generality, ensuring semantic consistency and the inheritance of axioms. Subsumption relations are internal and non-descriptive, as they are defined entirely by the intrinsic properties of the types involved, without requiring tropes or intermediary entities to establish their truth.
@@ -118,7 +118,7 @@ As an example, we can state that Human "is_a" Mammal, indicating that every indi
 Consider how a sample of granite belongs to the wider group of igneous rocks: whatever piece of granite one might examine turns out, at the same time, to be an igneous rock, sharing every general property that characterizes that broader group. In much the same way, a crystal of quartz can be understood as belonging to the wider group of silicate minerals, since any quartz crystal one might point to already carries the defining characteristics of the silicate family it falls under.
 
 
- Mereological Relations 
+$$ Mereological Relations $$
 
 [definition]
 These relations capture the intrinsic composition of entities by describing how parts constitute a coherent whole. We can cite: component-integral object, corresponding to functional and separable relations, such as hand/arm; member-collection, in which elements are members of a whole, such as tree/forest; portion-mass, in which a part can be separated from a mass, such as slice/cake; feature-activity, relating functional properties to activities, such as paying/buying; location-area, representing spatial relations, such as Madrid/Spain; and substance-object, describing the relation between a material constituent and an object, such as aluminum/airplane.
@@ -130,7 +130,7 @@ As an example, we can state that Nucleus "part_of" Cell, indicating that every i
 Think of a mineral grain embedded within a larger rock sample: the grain exists as one constituent piece of the sample, contributing to the whole without being identical to it. In a similar way, a single rock stratum can be understood as one among several layers making up a wider sedimentary sequence, and a single tree can be seen as one among many individuals that together make up a forest.
 
 
- Topological and Positional Spatial Relations 
+$$ Topological and Positional Spatial Relations $$
 
 [definition]
 These relations describe the location, orientation, adjacency, and overlap between independent entities in three-dimensional space. They are fundamental for representing the spatial arrangement of continuants, making it possible to specify both the spatial region occupied by an entity and its position relative to other entities. The primitive location relation connects a continuant to the three-dimensional region it occupies at a given instant, while derived relations allow us to state that a continuant is located in another whenever its spatial region is part of the region occupied by the second entity. The location may be exact, when both regions coincide, or inexact, when the region occupied by the first entity is a proper part of the region occupied by the second. In addition, relations such as above, below, adjacent to, and overlaps with make it possible to represent the spatial configuration of objects and structures across different domains, such as the arrangement of geological bodies, stratigraphic layers, and geomorphological units.
@@ -142,7 +142,7 @@ As an example, we can state that Nucleus "located_in" Cell, indicating that ever
 Picture a groundwater reservoir situated beneath a layer of soil, or a sedimentary basin positioned within the boundaries of a wider geographic region: in both cases, one entity occupies a spatial position that only makes sense relative to another. Two rock strata lying side by side, sharing a common boundary, illustrate a comparable spatial arrangement, and the same holds for a mineral vein sitting at a certain height relative to a neighboring rock formation.
 
 
- Temporal Relations 
+$$ Temporal Relations $$
 
 [definition]
 These relations describe the temporal organization of occurrents, including processes, events, and time intervals. Unlike continuants, occurrents extend through time, having a beginning, a development, and an end. Temporal relations make it possible to represent the order, simultaneity, duration, and overlap between processes, and can be established both between instances and universals. Relations such as before, after, simultaneous with, during, and overlaps with are widely used to model sequences of natural, historical, and geological events. A particular case is historical dependence, an external and non-descriptive relation whose truth is grounded in an event responsible for the existence of the relation.
@@ -154,7 +154,7 @@ As an example, we can state that Erosion "before" Sedimentation, representing th
 Imagine an episode of erosion that runs its course ahead of a subsequent period of sedimentation, or a mountain-building episode that unfolds within the span of a particular geological era: in both cases, one occurrence is placed in time only in relation to another. A person's birth marking the point from which the whole span of that person's life is later measured illustrates the same idea of one occurrence anchoring the timing of something else.
 
 
- Existential Dependence, Inherence, and Mediation Relations 
+$$ Existential Dependence, Inherence, and Mediation Relations $$
 
 [definition]
 These relations describe different forms of ontological dependence between entities, characterizing situations in which one entity cannot exist independently of another. Existential dependence establishes that the existence of an entity necessarily presupposes the existence of its bearer or another related entity. The inherence relation connects moments to the continuants in which they exist, whereas the mediation relation connects relators to the individuals they link. In addition, external dependence describes modes that inhere in an individual but whose existence also depends on another entity distinct from their bearer. These relations are fundamental for representing qualities, modes, commitments, social bonds, and other dependent entities.
@@ -166,7 +166,7 @@ As an example, we can state that Color "inheres_in" Flower, indicating that the 
 Consider the color of a flower: it has no existence of its own and can only be found as a quality carried by the very flower that displays it. In much the same way, a feeling one person holds toward another cannot exist without the person who feels it, nor does it make sense without the other person it is directed toward, and a marriage exists only insofar as it ties together the two people bound by it.
 
 
- Participation Relations 
+$$ Participation Relations $$
 
 [definition]
 These relations establish the connection between continuants and occurrents by indicating which entities participate in particular processes or events. Participation is a primitive relation at the instance level, connecting a continuant to a process at a given instant in time. At the level of universals, this relation expresses that every instance of a process has some instance of a given continuant as a participant during its realization. This is an asymmetric relation, since participating in a process does not imply that every instance of the continuant necessarily participates in that process. These relations are widely used to represent the involvement of agents, materials, or objects in natural, biological, and geological processes.
@@ -178,7 +178,7 @@ As an example, we can state that Subduction "has_participant" Tectonic Plate, in
 Think of a subduction episode unfolding with an oceanic plate caught up in it, contributing to the process as it plays out, or an episode of erosion carrying flowing water along as an active ingredient of what is happening. A volcanic eruption with molten magma swept up in its course illustrates the same idea: an occurrence taking place with some continuant swept along in it.
 
 
- Descriptive and Comparative Relations 
+$$ Descriptive and Comparative Relations $$
 
 [definition]
 These relations express properties or comparisons whose truth depends on the existence of tropes, such as qualities, modes, or relators. Unlike internal non-descriptive relations, their ontological grounding requires intermediary entities responsible for their truth, thereby justifying their reification. Descriptive relations may be internal, when based on intrinsic qualities of the relata, or external, when they depend on externally dependent modes or relators. Comparative relations constitute a particular case of internal descriptive relations, allowing comparisons to be established between qualities shared by different entities.
@@ -190,7 +190,7 @@ As an example, we can cite "heavier_than", derived from the qualities of Weight,
 Consider two rock samples being compared on the basis of how much each one weighs, so that one is said to outweigh the other purely on account of a quality each sample separately possesses. Or think of the way one person's fondness for another gives rise to a description linking the two of them, even though what grounds that description is not a simple quality but an underlying tie connecting the pair.
 
 
- Material Relations 
+$$ Material Relations $$
 
 [definition]
 These relations describe connections between entities whose existence depends on an intermediary entity responsible for establishing the link between the relata. External descriptive relations may be grounded in an externally dependent mode when they are unidirectional, or in a relator when they are bidirectional. The reification of these relations makes it possible to explicitly represent their truthmakers, as well as cardinality constraints and other semantic properties that cannot be directly expressed by the material relation itself.
@@ -202,7 +202,7 @@ As an example, we can cite "employed_by", "derived_from" Employment Contract, in
 Picture the tie between a worker and the organization that pays their wages, a connection that only holds because of an underlying work agreement joining the two. In a comparable way, the bond between two spouses rests on the union that connects them, showing how a link between two entities can be grounded in some underlying arrangement that brings them together.
 
 
- Constitution, Generation, and Material Derivation Relations 
+$$ Constitution, Generation, and Material Derivation Relations $$
 
 [definition]
 These relations describe the material composition, origin, and transformation of entities over time. Constitution relations specify the material or substance that composes an entity, whereas generation relations connect processes to the products they produce. Material derivation relations, in turn, represent the provenance of materials or substances from their sources or precursors. These relations are particularly important in domains such as geology, materials science, and engineering, where processes of material transformation play a central role.
@@ -214,7 +214,7 @@ As an example, we can state that Quartz "constitutes" Sandstone, indicating that
 Think of the grains of quartz making up a sample of sandstone, forming the very substance the rock is composed of, or of molten rock that, once it cools and hardens through a volcanic episode, ends up as a solid igneous rock. Petroleum having its origin in ancient organic matter buried and transformed over long stretches of time offers another illustration of a material whose composition can be traced back to an earlier source.
 
 
- Concretization and Denotation Relations 
+$$ Concretization and Denotation Relations $$
 
 [definition]
 These relations connect information entities to the entities in the world that they represent, or to the concrete manifestations of a given universal. Concretization relates informational entities or universals to their particular realizations, while denotation establishes the correspondence between symbols, terms, or representations and the entities they designate. These relations are fundamental to ontological engineering, as they make it possible to clearly distinguish between domain objects, informational entities, and linguistic representations, promoting interoperability between ontologies and databases.
@@ -226,7 +226,7 @@ As an example, we can state that Red Wine "concretized_by" Wine Bottle, indicati
 Consider a single bottle of red wine as one concrete realization of the broader kind of beverage it belongs to, or the way a written term used for a rock sample stands for and brings to mind the broader category of rock it names. A geological map laying out the arrangement of underground structures is a further case of a document standing in for, and conveying information about, the physical structures it depicts.
 
 
- Historical Relations 
+$$ Historical Relations $$
 
 [definition]
 These relations describe connections whose truth depends on the occurrence of past events responsible for establishing the link between the entities involved. They are external, non-descriptive relations, since their truthmaker corresponds not to qualities, modes, or relators, but to events or chains of events that constitute the history of the relata. These relations are particularly important for representing genealogies, evolutionary processes, production histories, and natural formations whose identity depends on their temporal trajectory.

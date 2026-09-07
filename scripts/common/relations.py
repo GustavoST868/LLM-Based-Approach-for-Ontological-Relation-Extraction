@@ -159,18 +159,6 @@ def same_entity(phrase, other, threshold=0.75):
     return difflib.SequenceMatcher(None, left, right).ratio() >= threshold
 
 
-def looks_like_a_verb(phrase):
-    if not phrase:
-        return False
-    try:
-        from common import language
-        pipeline = language.pipeline()
-        tokens = [token for token in pipeline(phrase) if not token.is_space and not token.is_punct]
-        return bool(tokens) and all(token.pos_ in ("VERB", "AUX") for token in tokens)
-    except Exception:
-        return False
-
-
 def rejected(reason, candidate):
     console.detail(f"rejected ({reason}): {str(candidate)[:160]}")
 
@@ -238,10 +226,6 @@ def check_relation(candidate, expected_type=None, check_usage=True, source_text=
 
     if is_placeholder(subject) or is_placeholder(target):
         rejected(f"usage example uses a schema placeholder: {relation['usage_example']}", candidate)
-        return None
-
-    if looks_like_a_verb(target):
-        rejected(f"usage example object '{target}' looks like a verb, not an entity", candidate)
         return None
 
     if source_text and (not is_in_source(subject, source_text)

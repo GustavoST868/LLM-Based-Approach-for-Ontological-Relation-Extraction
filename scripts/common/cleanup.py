@@ -38,12 +38,10 @@ def trim_heap():
 
 
 def release_everything(reason=""):
-    from common import embeddings, language, model, rebel
+    from common import embeddings, model
 
     release("the language model", model.unload)
     release("the embedding model", embeddings.unload)
-    release("REBEL", rebel.unload)
-    release("the spaCy pipeline", language.unload)
 
     gc.collect()
     empty_gpu_cache()
