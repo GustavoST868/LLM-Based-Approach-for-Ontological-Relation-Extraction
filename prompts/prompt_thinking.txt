@@ -1,0 +1,22 @@
+
+@@@ analyse_snippet @@@
+
+Read the snippet at the end of this prompt and write down that reading, in three labelled lines and nothing besides them. Another request extracts the relations afterwards, and it starts from what you write here.
+
+On the first line, headed "Verbs:", copy the verbs and verb phrases the snippet uses, separated by semicolons, at most eight of them, leaving aside the verbs of the citation apparatus such as "see" or "Figure 2 shows". On the second, headed "Reading:", write at most sixty words of plain prose saying what each of those verbs ties to what, and which link the snippet leaves implied rather than stated by a verb — carried by a preposition, an apposition, a parenthesis, a genitive or a comma — quoting the snippet's own words for whatever carries it. On the third, headed "Links:", write those links as "subject | cue | object", separated by semicolons, at most six, or exactly "Links: none" when the snippet ties no two entities it names.
+
+Everything you write is copied from the running text. Never infer, never bring in knowledge of your own, and never make a subject or an object out of a pronoun. A link you had to reason your way to is invented rather than implied, and it does not belong here. Neither does a preamble, a closing remark, or the snippet copied back out.
+
+The shape of the answer, in an example whose content is invented and comes from no snippet:
+Verbs: lies; is composed of
+Reading: The nucleus lies within the cell, and the wall is composed of cellulose; the genitive "the cell's wall" leaves implied that the wall belongs to the cell, which no verb states.
+Links: nucleus | lies within | cell; wall | is composed of | cellulose; wall | of | cell
+{{#annotation}}
+After the snippet, under "Verbs and what they connect", a parser lists the subjects it found, the verbs, and what each verb ties them to. It is a guide to the text and not part of it: read it, but copy your words from the snippet itself.
+{{/annotation}}
+
+Snippet:
+"""
+$chunk_text
+"""
+

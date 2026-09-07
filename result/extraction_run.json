@@ -1,0 +1,33 @@
+{
+  "status": "stopped",
+  "pid": 321941,
+  "run": "llama3.1:8b",
+  "model": "llama3.1:8b",
+  "mode": "ollama",
+  "options": {
+    "model": "llama3.1:8b",
+    "mode": "ollama",
+    "unit": "paragraph",
+    "use_rag": true,
+    "use_ontology_classes": true,
+    "use_linguistic_annotation": true,
+    "use_snippet_analysis": true,
+    "fresh": true,
+    "steps": [
+      "extract",
+      "merge",
+      "cluster",
+      "disambiguate",
+      "merge_global"
+    ]
+  },
+  "steps": [
+    "extract",
+    "merge",
+    "cluster",
+    "disambiguate",
+    "merge_global"
+  ],
+  "started_at": 1788809562.1053443,
+  "ended_at": 1788812234.6582766
+}
